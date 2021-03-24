@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Image, FlatList} from 'react-native';
 import CardMovie from './js/components/common/CardMovie';
 import {IMAGE_URL} from './js/constant/general';
+import Login from './js/components/Login';
 
 const App = () => {
   const movies = [
@@ -85,7 +86,8 @@ const App = () => {
   );
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
+      <Login />
+      {/* <View style={styles.topContainer}>
         <FlatList
           data={movies}
           renderItem={renderPoster}
@@ -100,7 +102,7 @@ const App = () => {
           keyExtractor={item => item.id}
           horizontal
         />
-      </View>
+      </View> */}
     </View>
   );
 };
