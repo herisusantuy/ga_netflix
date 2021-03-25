@@ -3,7 +3,7 @@ export const color = {
   red: '#E50914',
   white: '#FFFFFF',
   black: '#000000',
-  darkGrey: '#333333',
+  darkGrey: '#111111',
   fbColor: '#4267B2',
 };
 
@@ -11,4 +11,7 @@ export const style = {
   containerMargin: 15,
   paddingTextInput: 15,
   marginTextInput: 10,
+  small: 5,
+  medium: 10,
+  large: 15,
 };
