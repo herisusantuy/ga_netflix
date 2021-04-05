@@ -53,7 +53,11 @@ const Login = props => {
           New to Netflix ?{' '}
           <Text
             style={styles.signUp}
-            onPress={() => props.navigation.navigate('Register')}>
+            onPress={() =>
+              props.navigation.navigate('Register', {
+                username: 'John Doe',
+              })
+            }>
             Sign up now.
           </Text>
         </Text>

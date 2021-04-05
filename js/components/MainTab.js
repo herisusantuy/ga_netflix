@@ -10,6 +10,7 @@ import {color} from '../styles/default';
 
 // Navigation Setting
 const Tab = createMaterialBottomTabNavigator();
+
 const HomeStack = createStackNavigator();
 const ComingSoonStack = createStackNavigator();
 const DownloadStack = createStackNavigator();
@@ -40,7 +41,7 @@ const HomeStackScreen = ({navigation}) => (
             size={25}
             backgroundColor={color.black}
             color={color.white}
-            // onPress={() => navigation.openDrawer()}
+            onPress={() => navigation.openDrawer()}
           />
         ),
         headerRight: () => (

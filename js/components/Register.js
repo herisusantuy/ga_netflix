@@ -6,6 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import styles from '../styles/register';
 
 const Register = props => {
+  console.log('🚀 ~ file: Register.js ~ line 9 ~ props', props.route.params);
   //   const [email, setEmail] = useState(null);
 
   return (
@@ -16,6 +17,7 @@ const Register = props => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.signIn}>Register</Text>
+        <Text style={styles.signIn}>Hi {props.route.params.username}</Text>
         <TextInput
           style={styles.input}
           // onChangeText={onChangeText}
@@ -42,11 +44,22 @@ const Register = props => {
       <View style={styles.buttonContainer}>
         <CustomButton title="Register" />
         <View style={styles.underBtnContainer}>
-          <Text
-            style={styles.underBtnText}
-            onPress={() => props.navigation.pop()}>
-            Back
-          </Text>
+          <View
+            onPress={() => props.navigation.navigate('Login')}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <AntDesign
+              name="left"
+              size={20}
+              color={color.white}
+              style={{marginRight: 5}}
+            />
+            <Text style={styles.underBtnText}>Back</Text>
+          </View>
+
           <Text style={styles.underBtnText}>Need help ?</Text>
         </View>
       </View>
