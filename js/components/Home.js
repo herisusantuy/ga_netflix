@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, FlatList, Image, TextInput} from 'react-native';
 import {IMAGE_URL, API_KEY, API_URL} from '../constant/general';
 import CardMovie from './common/CardMovie';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = props => {
   const [popular, setPopular] = useState([]);
@@ -10,9 +11,15 @@ const Home = props => {
   const [searchTextInput, setSearchTextInput] = useState(null);
 
   useEffect(() => {
-    getPopular();
+    // getPopular();
     getNowPlaying();
   }, []);
+
+  const handleMoveToDetail = async movie => {
+    props.navigation.navigate('Detail', {
+      selectedMovie: movie,
+    });
+  };
 
   async function getPopular() {
     try {
@@ -35,7 +42,9 @@ const Home = props => {
     }
   };
 
-  const renderMovie = ({item}) => <CardMovie movie={item} />;
+  const renderMovie = ({item}) => (
+    <CardMovie movie={item} moveToDetail={() => handleMoveToDetail(item)} />
+  );
   const renderPoster = ({item}) => (
     <Image
       source={{
@@ -44,7 +53,6 @@ const Home = props => {
       style={styles.poster}
     />
   );
-  console.log('nowPlaying', nowPlaying[0]);
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
   },
   poster: {
     width: 375,
-    height: 275,
+    // height: 275,
     marginTop: 15,
     marginHorizontal: 5,
     borderRadius: 10,

@@ -7,9 +7,10 @@ import Login from './Login';
 import Register from './Register';
 import MainTab from './MainTab';
 import DrawerContent from './DrawerContent';
+import Detail from './Detail';
 
 // Stack Navigation
-const RootStack = createStackNavigator();
+// const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const RootStackScreen = ({navigation}) => (
@@ -20,6 +21,7 @@ const RootStackScreen = ({navigation}) => (
     <Drawer.Screen name="Login" component={Login} />
     <Drawer.Screen name="Register" component={Register} />
     <Drawer.Screen name="MainTab" component={MainTab} />
+    <Drawer.Screen name="Detail" component={Detail} />
   </Drawer.Navigator>
 );
 

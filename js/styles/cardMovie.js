@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   poster: {
     width: 200,
     height: 250,
+    borderRadius: 20,
   },
 });
 
