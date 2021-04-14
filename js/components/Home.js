@@ -1,45 +1,32 @@
 import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Text, StyleSheet, FlatList, Image, TextInput} from 'react-native';
-import {IMAGE_URL, API_KEY, API_URL} from '../constant/general';
+import {IMAGE_URL} from '../constant/general';
 import CardMovie from './common/CardMovie';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import CardGenre from './common/CardGenre';
+
+// action
+import {getPopularAction} from '../actions/movieAction';
 
 const Home = props => {
-  const [popular, setPopular] = useState([]);
-  const [nowPlaying, setNowPlaying] = useState([]);
+  const dispatch = useDispatch();
+  const [popular, setPopular] = useState(
+    useSelector(state => state.movies.popular),
+  );
+  const [loading, setLoading] = useState(
+    useSelector(state => state.movies.loading),
+  );
+  // const [nowPlaying, setNowPlaying] = useState([]);
   const [searchTextInput, setSearchTextInput] = useState(null);
 
   useEffect(() => {
-    // getPopular();
-    getNowPlaying();
-  }, []);
+    dispatch(getPopularAction());
+  }, [loading]);
 
   const handleMoveToDetail = async movie => {
     props.navigation.navigate('Detail', {
       selectedMovie: movie,
     });
-  };
-
-  async function getPopular() {
-    try {
-      const response = await axios.get(
-        `${API_URL}/popular?api_key=${API_KEY}&language=en-US&page=1`,
-      );
-      setPopular(response.data.results);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  const getNowPlaying = async () => {
-    let url = `${API_URL}/upcoming?api_key=${API_KEY}&language=en-US&page=1`;
-    try {
-      const response = await axios.get(url);
-      setNowPlaying(response.data.results);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const renderMovie = ({item}) => (
@@ -53,30 +40,29 @@ const Home = props => {
       style={styles.poster}
     />
   );
+  console.log('popular', popular);
+  console.log('loading', loading);
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <FlatList
-          data={
-            !searchTextInput
-              ? popular
-              : popular.filter(movie =>
-                  movie.title
-                    .toLowerCase()
-                    .includes(searchTextInput.toLowerCase()),
-                )
-          }
-          renderItem={renderPoster}
-          keyExtractor={item => item.id}
-          horizontal
-        />
-      </View>
+      <CardGenre />
+      {/* <View style={styles.topContainer}>
+        {!loading ? (
+          <FlatList
+            data={popular}
+            renderItem={renderPoster}
+            keyExtractor={item => item.id}
+            horizontal
+          />
+        ) : (
+          <Text>Loading data...</Text>
+        )}
+      </View> */}
       <TextInput
         placeholder="Search movie..."
         value={searchTextInput}
         onChangeText={value => setSearchTextInput(value)}
       />
-      <View style={styles.bottomContainer}>
+      {/* <View style={styles.bottomContainer}>
         <FlatList
           data={
             !searchTextInput
@@ -91,7 +77,7 @@ const Home = props => {
           keyExtractor={item => item.id}
           horizontal
         />
-      </View>
+      </View> */}
     </View>
   );
 };

@@ -2,20 +2,29 @@ import React, {useEffect} from 'react';
 
 // Navigation
 import {NavigationContainer} from '@react-navigation/native';
-import {createDrawerNavigator} from '@react-navigation/drawer';
 
 // Screen
 import RootStackScreen from './js/components/RootStack';
 
-const Drawer = createDrawerNavigator();
+// Store
+import {Provider, useDispatch} from 'react-redux';
+import store from './js/store';
+
+// Action
+// import {getPopularAction} from './js/actions/movieAction';
 
 const App = () => {
-  useEffect(() => {}, []);
+  // const dispatch = useDispatch();
+  useEffect(() => {
+    // dispatch(getPopularAction());
+  }, []);
 
   return (
-    <NavigationContainer>
-      <RootStackScreen />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStackScreen />
+      </NavigationContainer>
+    </Provider>
   );
 };
 

@@ -13,7 +13,7 @@ const Login = props => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogin = () => {
-    AsyncStorage.setItem('email', email);
+    // AsyncStorage.setItem('email', email);
     props.navigation.navigate('MainTab');
   };
 
