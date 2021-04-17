@@ -55,7 +55,13 @@ const Login = props => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton title="Sign In" onPressButton={() => handleLogin()} />
+        <View
+          style={{
+            justifyContent: 'center',
+          }}>
+          <CustomButton title="Sign In" onPressButton={() => handleLogin()} />
+        </View>
+
         <View style={styles.underBtnContainer}>
           <Text style={styles.underBtnText}>Remember</Text>
           <Text style={styles.underBtnText}>Need help ?</Text>

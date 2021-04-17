@@ -7,37 +7,51 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
+  FlatList,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {API_URL, API_KEY, IMAGE_URL} from '../constant/general';
-import axios from 'axios';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {color} from '../styles/default';
 import LinearGradient from 'react-native-linear-gradient';
+import {getMovieAction, getMovieReviewAction} from '../actions/movieAction';
 
 const Detail = props => {
+  const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(false);
-  const [movie, setMovie] = useState(props.route.params.selectedMovie);
-
+  const selectedMovie = useSelector(state => state.movies.movie);
+  const reviews = useSelector(state => state.movies.reviews);
+  const loading = useSelector(state => state.movies.loading);
   useEffect(() => {
-    // getDetailMovie(props.route.params.movieId);
-  }, []);
+    dispatch(getMovieAction(props.route.params.movieId));
+    dispatch(getMovieReviewAction(props.route.params.movieId));
+  }, [props.route.params.movieId]);
 
-  const getDetailMovie = async movieId => {
-    let url = `${API_URL}/${movieId}?api_key=${API_KEY}`;
-    try {
-      const response = await axios.get(url);
-      setMovie(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const renderGenre = genres => {
     return genres?.map((genre, i) => (
-      <Text
+      <View
         key={i}
-        style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>
-        {genre.name}
-      </Text>
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text key={i} style={{color: color.white, fontSize: 10}}>
+          {genre.name}
+        </Text>
+        {i != genres.length - 1 && (
+          <View
+            style={{
+              backgroundColor: color.red,
+              marginHorizontal: 5,
+              width: 5,
+              height: 5,
+              borderRadius: 5,
+              marginHorizontal: 3,
+            }}></View>
+        )}
+      </View>
     ));
   };
   const renderHeaderBar = () => (
@@ -70,7 +84,7 @@ const Detail = props => {
   );
   const renderHeaderSection = () => (
     <ImageBackground
-      source={{uri: `${IMAGE_URL}/${movie.backdrop_path}`}}
+      source={{uri: `${IMAGE_URL}/${selectedMovie.backdrop_path}`}}
       resizeMode="cover"
       style={{
         width: '100%',
@@ -92,11 +106,11 @@ const Detail = props => {
             <Text
               style={{
                 color: color.white,
-                fontSize: 36,
+                fontSize: 40,
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}>
-              {movie.title}
+              {selectedMovie.title}
             </Text>
             {renderCategoryAndRating()}
           </LinearGradient>
@@ -108,46 +122,138 @@ const Detail = props => {
   const renderCategoryAndRating = () => (
     <View
       style={{
-        flexDirection: 'row',
-        marginTop: 10,
+        marginTop: -15,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      {/* <View style={[styles.categoryContainer]}>
-        {renderGenre(movie.genres)}
-      </View> */}
-      <View style={styles.categoryContainer}>
-        <AntDesign name="star" color="yellow" size={15} />
-        <Text style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>
-          {movie.vote_average}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginVertical: 10,
+        }}>
+        {renderGenre(selectedMovie?.genres?.slice(0, 3))}
+      </View>
+      <View style={{flexDirection: 'row'}}>
+        <View style={styles.categoryContainer}>
+          <AntDesign name="message1" color={color.white} size={15} />
+          <Text style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>
+            {reviews.length}
+          </Text>
+        </View>
+        <View style={styles.categoryContainer}>
+          <AntDesign name="caretright" color={color.white} size={15} />
+          <Text
+            style={{
+              color: color.white,
+              fontSize: 12,
+              marginHorizontal: 5,
+              fontWeight: 'bold',
+            }}>
+            Play Trailer
+          </Text>
+        </View>
+        <View style={styles.categoryContainer}>
+          <AntDesign name="star" color="yellow" size={15} />
+          <Text style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>
+            {selectedMovie.vote_average}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderCasting = ({item}) => (
+    <View
+      style={{
+        width: 100,
+        height: 250,
+        marginRight: 5,
+      }}>
+      <Image
+        source={{
+          uri: `${IMAGE_URL}${item.profile_path}`,
+        }}
+        style={{
+          width: 100,
+          height: 150,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          resizeMode: 'cover',
+        }}
+      />
+      <View style={{paddingVertical: 10}}>
+        <Text style={{fontWeight: 'bold', fontSize: 16, color: color.white}}>
+          {item.original_name}
         </Text>
+        <Text style={{color: color.white}}>{item.character}</Text>
       </View>
     </View>
   );
 
   return (
-    <ScrollView
-      contentContainerStyle={{flex: 1, backgroundColor: color.black}}
-      style={{backgroundColor: color.black}}>
-      {renderHeaderSection()}
-      {movie && (
-        <View style={{marginVertical: 10}}>
-          <Text
-            style={{
-              fontSize: 18,
-              color: color.white,
-              fontWeight: 'bold',
-              marginVertical: 10,
-            }}>
-            Overview
-          </Text>
-          <Text
-            style={{fontSize: 14, color: color.white, textAlign: 'justify'}}>
-            {movie.overview}
-          </Text>
+    <>
+      {!loading ? (
+        <ScrollView
+          contentContainerStyle={{
+            backgroundColor: color.black,
+            paddingHorizontal: 5,
+            paddingBottom: 40,
+          }}
+          style={{backgroundColor: color.black}}>
+          {renderHeaderSection()}
+          <View style={{marginVertical: 10}}>
+            <Text
+              style={{
+                fontSize: 18,
+                color: color.white,
+                fontWeight: 'bold',
+                marginVertical: 10,
+              }}>
+              Overview
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: color.white,
+                textAlign: 'justify',
+              }}>
+              {selectedMovie.overview}
+            </Text>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 18,
+                color: color.white,
+                fontWeight: 'bold',
+                marginVertical: 10,
+              }}>
+              Top Billed Cast
+            </Text>
+            <FlatList
+              data={selectedMovie?.credits?.cast}
+              renderItem={renderCasting}
+              keyExtractor={(item, index) => index}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
+        </ScrollView>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignContent: 'center',
+            backgroundColor: color.black,
+          }}>
+          <ActivityIndicator size="large" color={color.darkRed} />
         </View>
       )}
-    </ScrollView>
+    </>
   );
 };
 

@@ -12,9 +12,11 @@ const styles = StyleSheet.create({
   container: {
     height: 50,
     backgroundColor: color.red,
-    borderRadius: 5,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '45%',
+    alignSelf: 'center',
   },
   title: {
     fontSize: 18,

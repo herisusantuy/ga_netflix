@@ -1,83 +1,88 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, StyleSheet, FlatList, Image, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TextInput,
+  ActivityIndicator,
+  ImageBackground,
+  SectionList,
+} from 'react-native';
 import {IMAGE_URL} from '../constant/general';
 import CardMovie from './common/CardMovie';
 import CardGenre from './common/CardGenre';
-
 // action
-import {getPopularAction} from '../actions/movieAction';
+import {
+  getPopularAction,
+  getGenresAction,
+  getUpcomingAction,
+  getNowPlayingAction,
+  getTopRatedAction,
+  updateGenres,
+} from '../actions/movieAction';
+import SectionMovie from './common/SectionMovie';
+
+import {color} from '../styles/default';
 
 const Home = props => {
   const dispatch = useDispatch();
-  const [popular, setPopular] = useState(
-    useSelector(state => state.movies.popular),
-  );
-  const [loading, setLoading] = useState(
-    useSelector(state => state.movies.loading),
-  );
-  // const [nowPlaying, setNowPlaying] = useState([]);
-  const [searchTextInput, setSearchTextInput] = useState(null);
+  const loading = useSelector(state => state.movies.loading);
+  const genres = useSelector(state => state.movies.genres);
+  const movies = [
+    {
+      title: 'Upcoming',
+      data: useSelector(state => state.movies.upcoming),
+    },
+    {
+      title: 'Popular',
+      data: useSelector(state => state.movies.popular),
+    },
+    {
+      title: 'Now Playing',
+      data: useSelector(state => state.movies.nowPlaying),
+    },
+    {
+      title: 'Top Rated',
+      data: useSelector(state => state.movies.topRated),
+    },
+  ];
 
   useEffect(() => {
     dispatch(getPopularAction());
-  }, [loading]);
+    dispatch(getUpcomingAction());
+    dispatch(getNowPlayingAction());
+    dispatch(getTopRatedAction());
+    dispatch(getGenresAction());
+  }, []);
 
-  const handleMoveToDetail = async movie => {
-    props.navigation.navigate('Detail', {
-      selectedMovie: movie,
-    });
-  };
-
-  const renderMovie = ({item}) => (
-    <CardMovie movie={item} moveToDetail={() => handleMoveToDetail(item)} />
-  );
-  const renderPoster = ({item}) => (
-    <Image
-      source={{
-        uri: `${IMAGE_URL}${item.poster_path}`,
-      }}
-      style={styles.poster}
+  const renderMoviePerSection = ({item}) => (
+    <SectionMovie
+      title={item.title}
+      data={item.data}
+      navigation={props.navigation}
     />
   );
-  console.log('popular', popular);
-  console.log('loading', loading);
   return (
     <View style={styles.container}>
-      <CardGenre />
-      {/* <View style={styles.topContainer}>
-        {!loading ? (
-          <FlatList
-            data={popular}
-            renderItem={renderPoster}
-            keyExtractor={item => item.id}
-            horizontal
-          />
-        ) : (
-          <Text>Loading data...</Text>
-        )}
-      </View> */}
-      <TextInput
-        placeholder="Search movie..."
-        value={searchTextInput}
-        onChangeText={value => setSearchTextInput(value)}
-      />
-      {/* <View style={styles.bottomContainer}>
-        <FlatList
-          data={
-            !searchTextInput
-              ? nowPlaying
-              : nowPlaying.filter(movie =>
-                  movie.title
-                    .toLowerCase()
-                    .includes(searchTextInput.toLowerCase()),
-                )
-          }
-          renderItem={renderMovie}
-          keyExtractor={item => item.id}
-          horizontal
-        />
-      </View> */}
+      {!loading ? (
+        <>
+          <CardGenre genres={genres} handleSelectGenre={updateGenres} />
+          <View>
+            <FlatList
+              data={movies}
+              renderItem={renderMoviePerSection}
+              keyExtractor={(item, index) => index}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </>
+      ) : (
+        <ActivityIndicator size="large" color={color.darkRed} />
+      )}
     </View>
   );
 };
@@ -87,6 +92,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
+    backgroundColor: color.black,
+    paddingBottom: 80,
   },
   topContainer: {
     flex: 4,
@@ -115,11 +123,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   poster: {
-    width: 375,
-    // height: 275,
-    marginTop: 15,
-    marginHorizontal: 5,
-    borderRadius: 10,
+    width: 150,
+    height: 225,
+    marginVertical: 5,
+    marginRight: 10,
+    borderRadius: 5,
     resizeMode: 'cover',
   },
 });

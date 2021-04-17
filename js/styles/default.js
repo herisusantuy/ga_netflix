@@ -5,6 +5,7 @@ export const color = {
   black: '#000000',
   darkGrey: '#111111',
   fbColor: '#4267B2',
+  orange: '#F3AD2E',
 };
 
 export const style = {
