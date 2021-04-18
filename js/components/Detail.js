@@ -133,7 +133,8 @@ const Detail = props => {
           alignItems: 'center',
           marginVertical: 10,
         }}>
-        {renderGenre(selectedMovie?.genres?.slice(0, 3))}
+        {/* {renderGenre(selectedMovie?.genres?.slice(0, 3))} */}
+        {renderGenre(selectedMovie?.genres)}
       </View>
       <View style={{flexDirection: 'row'}}>
         <View style={styles.categoryContainer}>

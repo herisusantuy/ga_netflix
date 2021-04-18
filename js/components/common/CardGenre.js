@@ -12,10 +12,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {color} from '../../styles/default';
 
 const CardGenre = props => {
-  const dispatch = useDispatch();
+  const [genres, setGenres] = useState(props.genres);
+  const handleSelectGenre = genre => {
+    let updateGenres = props.genres.map((g, i) => {
+      let obj = g;
+      g.isActive =
+        g.id == genre.id ? (g.isActive = !genre.isActive) : g.isActive;
+      return obj;
+    });
+    setGenres(updateGenres);
+    props.handleSelectGenre(genre.id);
+  };
+  useEffect(() => {}, [props.genres]);
   const renderGenre = ({item}) => (
     <TouchableOpacity
-      onPress={() => dispatch(props.handleSelectGenre(item))}
+      onPress={() => handleSelectGenre(item)}
       style={{
         justifyContent: 'center',
         padding: 5,
@@ -24,7 +35,7 @@ const CardGenre = props => {
         marginHorizontal: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: color.red,
         backgroundColor: item.isActive ? color.red : color.black,
       }}>
@@ -57,7 +68,7 @@ const CardGenre = props => {
         </Text>
       </View>
       <FlatList
-        data={props.genres}
+        data={genres.length > 0 ? genres : props.genres}
         renderItem={renderGenre}
         keyExtractor={item => item.id}
         horizontal

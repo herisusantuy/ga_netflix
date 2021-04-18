@@ -34,13 +34,19 @@ const SectionMovie = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{props.title}</Text>
-      <FlatList
-        data={props.data}
-        renderItem={renderPoster}
-        keyExtractor={(item, index) => index}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+      {props.data.length > 0 ? (
+        <FlatList
+          data={props.data}
+          renderItem={renderPoster}
+          keyExtractor={(item, index) => index}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+      ) : (
+        <Text style={{color: color.white, fontSize: 16}}>
+          Opps...Movie not found!
+        </Text>
+      )}
     </View>
   );
 };
@@ -48,12 +54,14 @@ const SectionMovie = props => {
 const styles = StyleSheet.create({
   container: {
     height: 250,
+    justifyContent: 'flex-start',
   },
   title: {
     fontWeight: 'bold',
     fontSize: 24,
     color: color.white,
     marginVertical: 5,
+    textAlign: 'left',
   },
   poster: {
     width: 150,

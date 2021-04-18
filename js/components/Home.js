@@ -21,13 +21,14 @@ import {
   getUpcomingAction,
   getNowPlayingAction,
   getTopRatedAction,
-  updateGenres,
 } from '../actions/movieAction';
 import SectionMovie from './common/SectionMovie';
 
 import {color} from '../styles/default';
 
 const Home = props => {
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [isRefresh, setIsRefresh] = useState(false);
   const dispatch = useDispatch();
   const loading = useSelector(state => state.movies.loading);
   const genres = useSelector(state => state.movies.genres);
@@ -56,27 +57,66 @@ const Home = props => {
     dispatch(getNowPlayingAction());
     dispatch(getTopRatedAction());
     dispatch(getGenresAction());
-  }, []);
+  }, [selectedGenres]);
+
+  const handleSelectGenre = id => {
+    let updateSelectedGenres = selectedGenres;
+    let idx = selectedGenres.findIndex(genre => genre == id);
+    if (idx == -1) {
+      updateSelectedGenres.push(id);
+    } else {
+      updateSelectedGenres.splice(idx, 1);
+    }
+    setSelectedGenres(selectedGenres);
+    setIsRefresh(!isRefresh);
+  };
+
+  const handleFilterMovie = (movies, genres) => {
+    let filteredMovies = movies.filter(movie => {
+      let isSelected = true;
+      for (let i = 0; i < genres.length; i++) {
+        let idx = movie?.genre_ids?.findIndex(idx => idx == genres[i]);
+        if (idx == -1) {
+          isSelected = false;
+          break;
+        }
+      }
+      if (isSelected) {
+        return movie;
+      }
+    });
+    return filteredMovies;
+  };
 
   const renderMoviePerSection = ({item}) => (
     <SectionMovie
       title={item.title}
-      data={item.data}
+      data={
+        selectedGenres.length > 0
+          ? handleFilterMovie(item.data, selectedGenres)
+          : item.data
+      }
       navigation={props.navigation}
     />
   );
+
   return (
     <View style={styles.container}>
       {!loading ? (
         <>
-          <CardGenre genres={genres} handleSelectGenre={updateGenres} />
-          <View>
+          <CardGenre genres={genres} handleSelectGenre={handleSelectGenre} />
+          <View
+            style={{
+              justifyContent: 'flex-start',
+              width: '100%',
+            }}>
             <FlatList
               data={movies}
               renderItem={renderMoviePerSection}
               keyExtractor={(item, index) => index}
               horizontal={false}
               showsVerticalScrollIndicator={false}
+              extraData={isRefresh}
             />
           </View>
         </>
