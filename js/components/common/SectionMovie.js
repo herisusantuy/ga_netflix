@@ -20,8 +20,23 @@ const SectionMovie = props => {
       movieId,
     });
   };
+  const generateGenre = genre_ids => {
+    let genresName = props.genres
+      .filter(genre => {
+        let idx = genre_ids.findIndex(id => id == genre.id);
+        if (idx != -1) {
+          return genre;
+        }
+      })
+      .map(genreObj => genreObj.name);
+    return genresName.map(gen => (
+      <View style={{justifyContent: 'center', flexDirection: 'row'}}>
+        <Text style={{color: 'white'}}>{gen}|</Text>
+      </View>
+    ));
+  };
   const renderPoster = ({item}) => (
-    <TouchableOpacity onPress={() => handleToMovieDetail(item.id)}>
+    <View onPress={() => handleToMovieDetail(item.id)}>
       <Image
         source={{
           uri: `${IMAGE_URL}${item.poster_path}`,
@@ -29,7 +44,7 @@ const SectionMovie = props => {
         style={styles.poster}
         horizontal
       />
-    </TouchableOpacity>
+    </View>
   );
   return (
     <View style={styles.container}>

@@ -9,24 +9,35 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {API_URL, API_KEY, IMAGE_URL} from '../constant/general';
+import {YOUTUBE_URL, IMAGE_URL, YOUTUBE_API_KEY} from '../constant/general';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {color} from '../styles/default';
 import LinearGradient from 'react-native-linear-gradient';
-import {getMovieAction, getMovieReviewAction} from '../actions/movieAction';
+import YouTube from 'react-native-youtube';
+import {
+  getMovieAction,
+  getMovieReviewAction,
+  getVideosAction,
+} from '../actions/movieAction';
 
 const Detail = props => {
   const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(false);
+  const [play, setPlay] = useState(false);
+
   const selectedMovie = useSelector(state => state.movies.movie);
   const reviews = useSelector(state => state.movies.reviews);
+  const videos = useSelector(state => state.movies.videos);
   const loading = useSelector(state => state.movies.loading);
+
   useEffect(() => {
     dispatch(getMovieAction(props.route.params.movieId));
     dispatch(getMovieReviewAction(props.route.params.movieId));
-  }, [props.route.params.movieId]);
+    dispatch(getVideosAction(props.route.params.movieId));
+  }, [props.route.params.movieId, play]);
 
   const renderGenre = genres => {
     return genres?.map((genre, i) => (
@@ -92,6 +103,25 @@ const Detail = props => {
       }}>
       <View style={{flex: 1}}>
         {renderHeaderBar()}
+        {/* {play && (
+          <View>
+            <YouTube
+              videoId={videos[0]?.key}
+              play={play}
+              fullscreen={false}
+              // loop={false}
+              // onReady={e => this.setState({isReady: true})}
+              // onChangeState={e => this.setState({status: e.state})}
+              // onChangeQuality={e => this.setState({quality: e.quality})}
+              // onError={e => this.setState({error: e.error})}
+              style={{
+                alignSelf: 'stretch',
+                height: 300,
+              }}
+              apiKey={YOUTUBE_API_KEY}
+            />
+          </View>
+        )} */}
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -143,7 +173,9 @@ const Detail = props => {
             {reviews.length}
           </Text>
         </View>
-        <View style={styles.categoryContainer}>
+        <TouchableOpacity
+          style={styles.categoryContainer}
+          onPress={() => setPlay(true)}>
           <AntDesign name="caretright" color={color.white} size={15} />
           <Text
             style={{
@@ -154,7 +186,7 @@ const Detail = props => {
             }}>
             Play Trailer
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.categoryContainer}>
           <AntDesign name="star" color="yellow" size={15} />
           <Text style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>

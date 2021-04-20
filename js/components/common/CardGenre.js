@@ -13,7 +13,7 @@ import {color} from '../../styles/default';
 
 const CardGenre = props => {
   const [genres, setGenres] = useState(props.genres);
-  const handleSelectGenre = genre => {
+  const onPressGenre = genre => {
     let updateGenres = props.genres.map((g, i) => {
       let obj = g;
       g.isActive =
@@ -26,7 +26,7 @@ const CardGenre = props => {
   useEffect(() => {}, [props.genres]);
   const renderGenre = ({item}) => (
     <TouchableOpacity
-      onPress={() => handleSelectGenre(item)}
+      onPress={() => onPressGenre(item)}
       style={{
         justifyContent: 'center',
         padding: 5,

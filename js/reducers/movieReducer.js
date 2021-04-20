@@ -10,6 +10,7 @@ const initialState = {
   error: null,
   movie: {},
   reviews: [],
+  videos: [],
 };
 
 const movieReducer = (state = initialState, action) => {
@@ -28,16 +29,6 @@ const movieReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loading: false,
         error: action.error,
-      });
-    case types.UPDATE_GENRE:
-      console.log('action', action);
-      return Object.assign({}, state, {
-        loading: false,
-        genres: state.genres.map(genre =>
-          genre.id == action.payload.id
-            ? (genre.isActive = !genre.isActive)
-            : genre.isActive,
-        ),
       });
     case types.GET_POPULAR_SUCCESS:
       return Object.assign({}, state, {
@@ -95,6 +86,16 @@ const movieReducer = (state = initialState, action) => {
         reviews: action.payload,
       });
     case types.GET_MOVIE_REVIEW_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error,
+      });
+    case types.GET_VIDEOS_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        videos: action.payload,
+      });
+    case types.GET_VIDEOS_FAILURE:
       return Object.assign({}, state, {
         loading: false,
         error: action.error,

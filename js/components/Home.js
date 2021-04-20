@@ -14,6 +14,7 @@ import {
 import {IMAGE_URL} from '../constant/general';
 import CardMovie from './common/CardMovie';
 import CardGenre from './common/CardGenre';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 // action
 import {
   getPopularAction,
@@ -27,11 +28,13 @@ import SectionMovie from './common/SectionMovie';
 import {color} from '../styles/default';
 
 const Home = props => {
+  const dispatch = useDispatch();
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [isRefresh, setIsRefresh] = useState(false);
-  const dispatch = useDispatch();
   const loading = useSelector(state => state.movies.loading);
   const genres = useSelector(state => state.movies.genres);
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [searchTextInput, setSearchTextInput] = useState(null);
   const movies = [
     {
       title: 'Upcoming',
@@ -71,11 +74,11 @@ const Home = props => {
     setIsRefresh(!isRefresh);
   };
 
-  const handleFilterMovie = (movies, genres) => {
+  const searchByGenres = movies => {
     let filteredMovies = movies.filter(movie => {
       let isSelected = true;
-      for (let i = 0; i < genres.length; i++) {
-        let idx = movie?.genre_ids?.findIndex(idx => idx == genres[i]);
+      for (let i = 0; i < selectedGenres.length; i++) {
+        let idx = movie?.genre_ids?.findIndex(idx => idx == selectedGenres[i]);
         if (idx == -1) {
           isSelected = false;
           break;
@@ -88,27 +91,72 @@ const Home = props => {
     return filteredMovies;
   };
 
+  const searchByTextInput = movies => {
+    let filteredMovies = movies.filter(movie =>
+      movie.title.toLowerCase().includes(searchTextInput.toLowerCase()),
+    );
+    return filteredMovies;
+  };
+
+  const handleFilterMovie = movies => {
+    let filteredMovies;
+    if (selectedGenres.length > 0 && !searchTextInput) {
+      filteredMovies = searchByGenres(movies);
+    }
+    if (searchTextInput && selectedGenres.length == 0) {
+      filteredMovies = searchByTextInput(movies);
+    }
+    if (searchTextInput && selectedGenres.length > 0) {
+      filteredMovies = searchByTextInput(searchByGenres(movies));
+    }
+
+    return filteredMovies;
+  };
+
   const renderMoviePerSection = ({item}) => (
     <SectionMovie
       title={item.title}
       data={
-        selectedGenres.length > 0
-          ? handleFilterMovie(item.data, selectedGenres)
+        searchTextInput || selectedGenres.length > 0
+          ? handleFilterMovie(item.data)
           : item.data
       }
+      genres={genres}
       navigation={props.navigation}
     />
   );
-
   return (
     <View style={styles.container}>
       {!loading ? (
-        <>
+        <View style={{marginTop: 80, width: '100%'}}>
+          <View style={{width: '100%'}}>
+            <TextInput
+              placeholder="Search movie..."
+              placeholderTextColor={color.white}
+              style={{
+                height: 45,
+                backgroundColor: color.darkGrey,
+                color: color.white,
+                borderRadius: 10,
+                paddingHorizontal: 35,
+              }}
+              value={searchTextInput}
+              onChangeText={text => setSearchTextInput(text)}
+            />
+            <AntDesign
+              name="search1"
+              size={25}
+              color={color.red}
+              style={{position: 'absolute', top: 10, left: 5}}
+            />
+          </View>
           <CardGenre genres={genres} handleSelectGenre={handleSelectGenre} />
           <View
             style={{
               justifyContent: 'flex-start',
               width: '100%',
+              marginBottom: 100,
+              paddingBottom: 50,
             }}>
             <FlatList
               data={movies}
@@ -119,7 +167,7 @@ const Home = props => {
               extraData={isRefresh}
             />
           </View>
-        </>
+        </View>
       ) : (
         <ActivityIndicator size="large" color={color.darkRed} />
       )}

@@ -16,11 +16,6 @@ const getGenresFailure = error => ({
   error,
 });
 
-export const updateGenres = genre => ({
-  type: types.GET_UPDATE_GENRE,
-  genre,
-});
-
 const getPopularSuccess = popular => ({
   type: types.GET_POPULAR_SUCCESS,
   payload: popular,
@@ -78,6 +73,16 @@ const getMovieReviewSuccess = reviews => ({
 
 const getMovieReviewFailure = error => ({
   type: types.GET_MOVIE_REVIEW_FAILURE,
+  error,
+});
+
+const getVideosSuccess = videos => ({
+  type: types.GET_VIDEOS_SUCCESS,
+  payload: videos,
+});
+
+const getVideosFailure = error => ({
+  type: types.GET_VIDEOS_FAILURE,
   error,
 });
 
@@ -183,6 +188,20 @@ export const getMovieReviewAction = movieId => {
     } catch (error) {
       console.log('error', error);
       dispatch(getMovieReviewFailure(error));
+    }
+  };
+};
+
+export const getVideosAction = movieId => {
+  let url = `${API_URL}/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`;
+  return async dispatch => {
+    dispatch(getRequest());
+    try {
+      const response = await axios.get(url);
+      dispatch(getVideosSuccess(response.data.results));
+    } catch (error) {
+      console.log('error', error);
+      dispatch(getVideosFailure(error));
     }
   };
 };
