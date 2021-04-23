@@ -103,25 +103,6 @@ const Detail = props => {
       }}>
       <View style={{flex: 1}}>
         {renderHeaderBar()}
-        {/* {play && (
-          <View>
-            <YouTube
-              videoId={videos[0]?.key}
-              play={play}
-              fullscreen={false}
-              // loop={false}
-              // onReady={e => this.setState({isReady: true})}
-              // onChangeState={e => this.setState({status: e.state})}
-              // onChangeQuality={e => this.setState({quality: e.quality})}
-              // onError={e => this.setState({error: e.error})}
-              style={{
-                alignSelf: 'stretch',
-                height: 300,
-              }}
-              apiKey={YOUTUBE_API_KEY}
-            />
-          </View>
-        )} */}
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -175,7 +156,11 @@ const Detail = props => {
         </View>
         <TouchableOpacity
           style={styles.categoryContainer}
-          onPress={() => setPlay(true)}>
+          onPress={() =>
+            props.navigation.navigate('PlayVideo', {
+              videos,
+            })
+          }>
           <AntDesign name="caretright" color={color.white} size={15} />
           <Text
             style={{

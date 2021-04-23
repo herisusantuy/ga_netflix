@@ -123,7 +123,7 @@ export const getGenresAction = () => {
 };
 
 export const getUpcomingAction = () => {
-  let url = `${API_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`;
+  let url = `${API_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US`;
   return async dispatch => {
     dispatch(getRequest());
     try {

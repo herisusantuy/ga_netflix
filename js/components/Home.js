@@ -51,7 +51,7 @@ const Home = props => {
     {
       title: 'Top Rated',
       data: useSelector(state => state.movies.topRated),
-    },
+    },  
   ];
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const Home = props => {
     dispatch(getNowPlayingAction());
     dispatch(getTopRatedAction());
     dispatch(getGenresAction());
-  }, [selectedGenres]);
+  }, []);
 
   const handleSelectGenre = id => {
     let updateSelectedGenres = selectedGenres;
@@ -70,7 +70,7 @@ const Home = props => {
     } else {
       updateSelectedGenres.splice(idx, 1);
     }
-    setSelectedGenres(selectedGenres);
+    setSelectedGenres(updateSelectedGenres);
     setIsRefresh(!isRefresh);
   };
 

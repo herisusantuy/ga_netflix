@@ -8,6 +8,7 @@ import Register from './Register';
 import MainTab from './MainTab';
 import DrawerContent from './DrawerContent';
 import Detail from './Detail';
+import PlayVideo from './common/PlayVideo';
 
 // Stack Navigation
 // const RootStack = createStackNavigator();
@@ -22,6 +23,7 @@ const RootStackScreen = ({navigation}) => (
     <Drawer.Screen name="Register" component={Register} />
     <Drawer.Screen name="MainTab" component={MainTab} />
     <Drawer.Screen name="Detail" component={Detail} />
+    <Drawer.Screen name="PlayVideo" component={PlayVideo} />
   </Drawer.Navigator>
 );
 

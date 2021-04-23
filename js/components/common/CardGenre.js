@@ -55,7 +55,7 @@ const CardGenre = props => {
     <View
       style={{
         height: 100,
-        marginVertical: 5,
+        marginVertical: 5, 
       }}>
       <View
         style={{
