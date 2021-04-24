@@ -18,7 +18,7 @@ const Drawer = createDrawerNavigator();
 const RootStackScreen = ({navigation}) => (
   <Drawer.Navigator
     headerMode="none"
-    initialRouteName="MainTab"
+    initialRouteName="Login"
     drawerContent={props => <DrawerContent {...props} />}>
     <Drawer.Screen name="Login" component={Login} />
     <Drawer.Screen name="Register" component={Register} />

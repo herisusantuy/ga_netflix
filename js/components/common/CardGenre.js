@@ -117,7 +117,7 @@ const CardGenre = props => {
           style={{
             flexWrap: 'wrap',
             flexDirection: 'row',
-            marginVertical: 10,
+            // marginVertical: 10,
             justifyContent: 'flex-start',
           }}>
           {renderMoreGenres}

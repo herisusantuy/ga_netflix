@@ -24,7 +24,9 @@ import {
   getNowPlayingAction,
   getTopRatedAction,
 } from '../actions/movieAction';
+import {getUserAction} from '../actions/userAction';
 import SectionMovie from './common/SectionMovie';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {color} from '../styles/default';
 
@@ -34,6 +36,8 @@ const Home = props => {
   const [isRefresh, setIsRefresh] = useState(false);
   const loading = useSelector(state => state.movies.loading);
   const genres = useSelector(state => state.movies.genres);
+  const profile = useSelector(state => state.user.profile);
+  const auth = useSelector(state => state.user.auth);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [searchTextInput, setSearchTextInput] = useState(null);
   const movies = [
@@ -54,13 +58,27 @@ const Home = props => {
       data: useSelector(state => state.movies.topRated),
     },
   ];
-
+  const getToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      if (value !== null) {
+        return value;
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
   useEffect(() => {
-    dispatch(getPopularAction());
-    dispatch(getUpcomingAction());
-    dispatch(getNowPlayingAction());
-    dispatch(getTopRatedAction());
-    dispatch(getGenresAction());
+    if (!getToken()) {
+      props.navigation.navigate('Login');
+    } else {
+      dispatch(getPopularAction());
+      dispatch(getUpcomingAction());
+      dispatch(getNowPlayingAction());
+      dispatch(getTopRatedAction());
+      dispatch(getGenresAction());
+      dispatch(getUserAction(auth.id));
+    }
   }, []);
 
   const handleSelectGenre = id => {
@@ -174,19 +192,12 @@ const Home = props => {
               // flex: 1,
             }}>
             {renderMapPerSection}
-            {/* <FlatList
-              data={movies}
-              renderItem={renderMoviePerSection}
-              keyExtractor={(item, index) => index}
-              horizontal={false}
-              scrollEnabled={false}
-              showsVerticalScrollIndicator={false}
-              extraData={isRefresh}
-            /> */}
           </View>
         </View>
       ) : (
-        <ActivityIndicator size="large" color={color.darkRed} />
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <ActivityIndicator size="large" color={color.darkRed} />
+        </View>
       )}
     </ScrollView>
   );
