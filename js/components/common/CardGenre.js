@@ -8,11 +8,12 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {color} from '../../styles/default';
 
 const CardGenre = props => {
   const [genres, setGenres] = useState(props.genres);
+  const [isMore, setIsMore] = useState(false);
   const onPressGenre = genre => {
     let updateGenres = props.genres.map((g, i) => {
       let obj = g;
@@ -24,16 +25,18 @@ const CardGenre = props => {
     props.handleSelectGenre(genre.id);
   };
   useEffect(() => {}, [props.genres]);
+
   const renderGenre = ({item}) => (
     <TouchableOpacity
       onPress={() => onPressGenre(item)}
       style={{
         justifyContent: 'center',
-        padding: 5,
-        height: 40,
+        // padding: 2,
+        paddingHorizontal: 5,
+        height: 30,
         borderRadius: 10,
-        marginHorizontal: 5,
-        flexDirection: 'row',
+        marginHorizontal: 3,
+        // flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 2,
         borderColor: color.red,
@@ -41,7 +44,7 @@ const CardGenre = props => {
       }}>
       <Text
         style={{
-          fontSize: 18,
+          fontSize: 14,
           color: color.white,
           marginLeft: 5,
           fontWeight: 'bold',
@@ -51,29 +54,83 @@ const CardGenre = props => {
     </TouchableOpacity>
   );
 
+  const renderMoreGenres = props.genres.map((genre, i) => (
+    <TouchableOpacity
+      key={i}
+      onPress={() => onPressGenre(genre)}
+      style={{
+        justifyContent: 'center',
+        // padding: 2,
+        paddingHorizontal: 5,
+        height: 30,
+        borderRadius: 10,
+        marginHorizontal: 3,
+        marginVertical: 5,
+        // flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: color.red,
+        backgroundColor: genre.isActive ? color.red : color.black,
+      }}>
+      <Text
+        style={{
+          fontSize: 14,
+          color: color.white,
+          marginLeft: 5,
+          fontWeight: 'bold',
+        }}>
+        {genre.name}
+      </Text>
+    </TouchableOpacity>
+  ));
+
   return (
     <View
       style={{
-        height: 100,
-        marginVertical: 5, 
+        // height: 80,
+        marginTop: 5,
       }}>
       <View
         style={{
           padding: 5,
           justifyContent: 'space-between',
           flexDirection: 'row',
+          alignItems: 'center',
         }}>
-        <Text style={{fontSize: 24, color: color.white, fontWeight: 'bold'}}>
+        <Text style={{fontSize: 18, color: color.white, fontWeight: 'bold'}}>
           Best Genre
         </Text>
+        <TouchableOpacity onPress={() => setIsMore(!isMore)}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: color.white,
+              fontWeight: 'normal',
+              textDecorationLine: 'underline',
+            }}>
+            {isMore ? 'Collapse' : 'Expand'}
+          </Text>
+        </TouchableOpacity>
       </View>
-      <FlatList
-        data={genres.length > 0 ? genres : props.genres}
-        renderItem={renderGenre}
-        keyExtractor={item => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+      {isMore ? (
+        <View
+          style={{
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            marginVertical: 10,
+            justifyContent: 'flex-start',
+          }}>
+          {renderMoreGenres}
+        </View>
+      ) : (
+        <FlatList
+          data={genres.length > 0 ? genres : props.genres}
+          renderItem={renderGenre}
+          keyExtractor={item => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };

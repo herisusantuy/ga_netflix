@@ -11,6 +11,7 @@ const initialState = {
   movie: {},
   reviews: [],
   videos: [],
+  images: [],
 };
 
 const movieReducer = (state = initialState, action) => {
@@ -96,6 +97,16 @@ const movieReducer = (state = initialState, action) => {
         videos: action.payload,
       });
     case types.GET_VIDEOS_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error,
+      });
+    case types.GET_IMAGES_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        images: action.payload,
+      });
+    case types.GET_IMAGES_FAILURE:
       return Object.assign({}, state, {
         loading: false,
         error: action.error,

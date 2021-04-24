@@ -19,6 +19,8 @@ const DownloadStack = createStackNavigator();
 import Home from './Home';
 import ComingSoon from './ComingSoon';
 import Download from './Download';
+import Reviews from './Reviews';
+import MoviesPerSection from './MoviesPerSection';
 
 // Setting Each Stack Scrren
 const HomeStackScreen = ({navigation}) => (
@@ -52,6 +54,20 @@ const HomeStackScreen = ({navigation}) => (
             color={color.white}
           />
         ),
+      }}
+    />
+    <HomeStack.Screen
+      name="Reviews"
+      component={Reviews}
+      options={{
+        title: 'Reviews',
+      }}
+    />
+    <HomeStack.Screen
+      name="MoviesPerSection"
+      component={MoviesPerSection}
+      options={{
+        title: null,
       }}
     />
   </HomeStack.Navigator>

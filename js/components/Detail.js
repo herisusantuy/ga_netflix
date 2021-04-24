@@ -21,6 +21,7 @@ import {
   getMovieAction,
   getMovieReviewAction,
   getVideosAction,
+  getImagesAction,
 } from '../actions/movieAction';
 
 const Detail = props => {
@@ -32,11 +33,14 @@ const Detail = props => {
   const reviews = useSelector(state => state.movies.reviews);
   const videos = useSelector(state => state.movies.videos);
   const loading = useSelector(state => state.movies.loading);
+  const images = useSelector(state => state.movies.images);
+  // console.log('🚀 ~ file: Detail.js ~ line 37 ~ images', images);
 
   useEffect(() => {
     dispatch(getMovieAction(props.route.params.movieId));
     dispatch(getMovieReviewAction(props.route.params.movieId));
     dispatch(getVideosAction(props.route.params.movieId));
+    dispatch(getImagesAction(props.route.params.movieId));
   }, [props.route.params.movieId, play]);
 
   const renderGenre = genres => {
@@ -148,12 +152,18 @@ const Detail = props => {
         {renderGenre(selectedMovie?.genres)}
       </View>
       <View style={{flexDirection: 'row'}}>
-        <View style={styles.categoryContainer}>
+        <TouchableOpacity
+          style={styles.categoryContainer}
+          onPress={() =>
+            props.navigation.navigate('Reviews', {
+              reviews,
+            })
+          }>
           <AntDesign name="message1" color={color.white} size={15} />
           <Text style={{color: color.white, fontSize: 12, marginHorizontal: 5}}>
             {reviews.length}
           </Text>
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.categoryContainer}
           onPress={() =>

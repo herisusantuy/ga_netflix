@@ -86,6 +86,16 @@ const getVideosFailure = error => ({
   error,
 });
 
+const getImagesSuccess = images => ({
+  type: types.GET_IMAGES_SUCCESS,
+  payload: images,
+});
+
+const getImagesFailure = error => ({
+  type: types.GET_IMAGES_FAILURE,
+  error,
+});
+
 export const getPopularAction = () => {
   let url = `${API_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
   return async dispatch => {
@@ -202,6 +212,20 @@ export const getVideosAction = movieId => {
     } catch (error) {
       console.log('error', error);
       dispatch(getVideosFailure(error));
+    }
+  };
+};
+
+export const getImagesAction = movieId => {
+  let url = `${API_URL}/movie/${movieId}/images?api_key=${API_KEY}`;
+  return async dispatch => {
+    dispatch(getRequest());
+    try {
+      const response = await axios.get(url);
+      dispatch(getImagesSuccess(response.data.backdrops));
+    } catch (error) {
+      console.log('error', error);
+      dispatch(getImagesFailure(error));
     }
   };
 };

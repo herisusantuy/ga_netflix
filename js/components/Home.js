@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   SectionList,
+  ScrollView,
 } from 'react-native';
 import {IMAGE_URL} from '../constant/general';
 import CardMovie from './common/CardMovie';
@@ -51,7 +52,7 @@ const Home = props => {
     {
       title: 'Top Rated',
       data: useSelector(state => state.movies.topRated),
-    },  
+    },
   ];
 
   useEffect(() => {
@@ -125,10 +126,23 @@ const Home = props => {
       navigation={props.navigation}
     />
   );
+  const renderMapPerSection = movies.map((movie, i) => (
+    <SectionMovie
+      key={i}
+      title={movie.title}
+      data={
+        searchTextInput || selectedGenres.length > 0
+          ? handleFilterMovie(movie.data)
+          : movie.data
+      }
+      genres={genres}
+      navigation={props.navigation}
+    />
+  ));
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {!loading ? (
-        <View style={{marginTop: 80, width: '100%'}}>
+        <View style={{width: '100%'}}>
           <View style={{width: '100%'}}>
             <TextInput
               placeholder="Search movie..."
@@ -156,33 +170,33 @@ const Home = props => {
               justifyContent: 'flex-start',
               width: '100%',
               marginBottom: 100,
-              paddingBottom: 50,
+              // paddingBottom: 50,
+              // flex: 1,
             }}>
-            <FlatList
+            {renderMapPerSection}
+            {/* <FlatList
               data={movies}
               renderItem={renderMoviePerSection}
               keyExtractor={(item, index) => index}
               horizontal={false}
+              scrollEnabled={false}
               showsVerticalScrollIndicator={false}
               extraData={isRefresh}
-            />
+            /> */}
           </View>
         </View>
       ) : (
         <ActivityIndicator size="large" color={color.darkRed} />
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 10,
     backgroundColor: color.black,
-    paddingBottom: 80,
   },
   topContainer: {
     flex: 4,
