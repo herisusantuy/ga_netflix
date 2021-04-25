@@ -15,12 +15,19 @@ const CardGenre = props => {
   const [genres, setGenres] = useState(props.genres);
   const [isMore, setIsMore] = useState(false);
   const onPressGenre = genre => {
-    let updateGenres = props.genres.map((g, i) => {
-      let obj = g;
-      g.isActive =
-        g.id == genre.id ? (g.isActive = !genre.isActive) : g.isActive;
-      return obj;
-    });
+    // selecte multiple genres
+    // let updateGenres = props.genres.map((g, i) => {
+    //   let obj = g;
+    //   g.isActive =
+    //     g.id == genre.id ? (g.isActive = !genre.isActive) : g.isActive;
+    //   return obj;
+    // });
+    // select one genre
+    let updateGenres = props.genres.map(gen =>
+      gen.id == genre.id
+        ? (gen.isActive = !gen.isActive)
+        : (gen.isActive = false),
+    );
     setGenres(updateGenres);
     props.handleSelectGenre(genre.id);
   };

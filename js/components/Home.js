@@ -69,16 +69,22 @@ const Home = props => {
     }
   };
   useEffect(() => {
-    if (!getToken()) {
-      props.navigation.navigate('Login');
-    } else {
-      dispatch(getPopularAction());
-      dispatch(getUpcomingAction());
-      dispatch(getNowPlayingAction());
-      dispatch(getTopRatedAction());
-      dispatch(getGenresAction());
-      dispatch(getUserAction(auth.id));
-    }
+    dispatch(getPopularAction());
+    dispatch(getUpcomingAction());
+    dispatch(getNowPlayingAction());
+    dispatch(getTopRatedAction());
+    dispatch(getGenresAction());
+    // dispatch(getUserAction(auth.id));
+    // if (!getToken()) {
+    //   props.navigation.navigate('Login');
+    // } else {
+    //   dispatch(getPopularAction());
+    //   dispatch(getUpcomingAction());
+    //   dispatch(getNowPlayingAction());
+    //   dispatch(getTopRatedAction());
+    //   dispatch(getGenresAction());
+    //   dispatch(getUserAction(auth.id));
+    // }
   }, []);
 
   const handleSelectGenre = id => {
